@@ -1,6 +1,7 @@
 package com.example.demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,9 @@ public class UserController
     private static final String USERNAME_ATTR = "username";
     private static final String PASSWORD_ATTR = "password";
     private static final String EMAIL_ATTR = "email";
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/h")
     @SuppressWarnings("unused")
@@ -36,6 +40,17 @@ public class UserController
         logger.info("Username: {}", uname);
         logger.info("Password received");
         logger.info("Email processing");
+
+        // Create and save user to database
+        User user = new User();
+        user.setUname(uname);
+        user.setPsw(psw);
+        user.setEmail(email);
+        user.setUsername(uname); // Assuming username is same as uname
+        userRepository.save(user);
+
+        logger.info("User registered successfully: {}", uname);
+
         x.addAttribute(USERNAME_ATTR, uname);
         x.addAttribute(EMAIL_ATTR, email);
         x.addAttribute(PASSWORD_ATTR, psw);
